@@ -715,11 +715,12 @@
     opacity: 1;
     transform: translateY(0);
   }
-  /* На мобильных сразу показываем если JS не сработал */
+  /* На мобильных отключаем анимацию — сразу показываем всё */
   @media (max-width: 900px) {
     .reveal {
-      opacity: 0;
-      transform: translateY(20px);
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      transition: none !important;
     }
   }
 
@@ -1130,7 +1131,7 @@
       <div class="contact-info-block" style="margin-top: 32px;">
         <div class="contact-info-label">EMAIL</div>
         <div class="contact-info-value">
-          <a href="/cdn-cgi/l/email-protection#692a011b0607063a1d061b0c47001d290e04080005470a0604"><span class="__cf_email__" data-cfemail="591a312b3637360a2d362b3c77302d193e34383035773a3634">[email&#160;protected]</span></a>
+          <a href="mailto:ChronoStore.it@gmail.com" data-email="true">ChronoStore.it&#64;gmail.com</a>
         </div>
       </div>
 
@@ -1221,7 +1222,7 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1276,8 +1277,15 @@
         observer.unobserve(e.target);
       }
     });
-  }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+  }, { threshold: 0.01, rootMargin: '0px 0px 0px 0px' });
   reveals.forEach(r => observer.observe(r));
+
+  // Fallback — показываем всё через 1.5 сек если анимация не сработала
+  setTimeout(() => {
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+      el.classList.add('visible');
+    });
+  }, 1500);
 
   // Smooth nav scroll
   document.querySelectorAll('a[href^="#"]').forEach(a => {
