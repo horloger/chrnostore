@@ -161,11 +161,16 @@
     text-align: center;
     z-index: 2;
     animation: fadeUp 1.2s ease forwards;
-    opacity: 0;
+    -webkit-animation: fadeUp 1.2s ease forwards;
+    opacity: 1;
   }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+  @-webkit-keyframes fadeUp {
+    from { opacity: 0; -webkit-transform: translateY(30px); }
+    to { opacity: 1; -webkit-transform: translateY(0); }
   }
   .hero-eyebrow {
     font-family: 'Cinzel', serif;
@@ -174,12 +179,14 @@
     color: var(--gold);
     margin-bottom: 30px;
     animation: fadeUp 1.2s 0.2s ease forwards;
-    opacity: 0;
+    -webkit-animation: fadeUp 1.2s 0.2s ease forwards;
+    opacity: 1;
   }
   .hero-logo-display {
     margin-bottom: 20px;
     animation: fadeUp 1.2s 0.4s ease forwards;
-    opacity: 0;
+    -webkit-animation: fadeUp 1.2s 0.4s ease forwards;
+    opacity: 1;
   }
   .logo-chrono {
     font-family: 'Dancing Script', cursive;
@@ -216,7 +223,8 @@
     margin-top: 28px;
     letter-spacing: 1px;
     animation: fadeUp 1.2s 0.6s ease forwards;
-    opacity: 0;
+    -webkit-animation: fadeUp 1.2s 0.6s ease forwards;
+    opacity: 1;
   }
   .hero-cta {
     margin-top: 50px;
@@ -224,7 +232,8 @@
     gap: 20px;
     justify-content: center;
     animation: fadeUp 1.2s 0.8s ease forwards;
-    opacity: 0;
+    -webkit-animation: fadeUp 1.2s 0.8s ease forwards;
+    opacity: 1;
   }
   .btn-primary {
     font-family: 'Cinzel', serif;
@@ -262,7 +271,8 @@
     align-items: center;
     gap: 8px;
     animation: fadeUp 1.2s 1.2s ease forwards;
-    opacity: 0;
+    -webkit-animation: fadeUp 1.2s 1.2s ease forwards;
+    opacity: 1;
   }
   .hero-scroll span {
     font-family: 'Cinzel', serif;
@@ -1131,7 +1141,7 @@
       <div class="contact-info-block" style="margin-top: 32px;">
         <div class="contact-info-label">EMAIL</div>
         <div class="contact-info-value">
-          <a href="mailto:ChronoStore.it@gmail.com" data-email="true">ChronoStore.it&#64;gmail.com</a>
+          <a href="/cdn-cgi/l/email-protection#14577c667b7a7b47607b66713a7d60547379757d783a777b79" data-email="true">ChronoStore.it&#64;gmail.com</a>
         </div>
       </div>
 
@@ -1222,7 +1232,7 @@
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1282,11 +1292,4 @@
 
   // Fallback — показываем всё через 1.5 сек если анимация не сработала
   setTimeout(() => {
-    document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-      el.classList.add('visible');
-    });
-  }, 1500);
-
-  // Smooth nav scroll
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.a
+    document.querySelectorAll('.reveal:not(.visible)').forEac
