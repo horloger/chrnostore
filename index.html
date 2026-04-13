@@ -1202,16 +1202,27 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Custom cursor
+<script>
+  // Custom cursor — только на устройствах с мышью
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
+  let cursorVisible = false;
+
+  // Скрываем курсор пока мышь не появилась
+  cursor.style.opacity = '0';
+  ring.style.opacity = '0';
 
   document.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
     cursor.style.left = mx + 'px';
     cursor.style.top = my + 'px';
+
+    if (!cursorVisible) {
+      cursorVisible = true;
+      cursor.style.opacity = '1';
+      ring.style.opacity = '1';
+    }
   });
 
   function animateRing() {
@@ -1263,3 +1274,4 @@
   // Fallback — показываем всё через 1.5 сек если анимация не сработала
   setTimeout(() => {
     document.querySelectorAll('.reveal:not(.visible)').forEac
+    
