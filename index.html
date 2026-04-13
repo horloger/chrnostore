@@ -35,14 +35,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Custom cursor — только на десктопе */
+  /* Custom cursor — только на десктопе, применяем ко всем элементам */
   @media (pointer: fine) {
-    body { cursor: none; }
-    .lang-switch button { cursor: none; }
-    .form-group input,
-    .form-group textarea,
-    .form-group select { cursor: none; }
-    .form-submit { cursor: none; }
+    *, *::before, *::after {
+      cursor: none !important;
+    }
   }
 
   /* Custom cursor */
