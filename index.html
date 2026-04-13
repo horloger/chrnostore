@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +7,7 @@
 <title>ChronoStore — Orologeria & Vendita · Modena</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   :root {
     --black: #0a0a0a;
@@ -18,742 +20,729 @@
     --gray-light: #999;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
+- { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-
   body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Cormorant Garamond', serif;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  /* Custom cursor */
-  .cursor {
-    width: 8px; height: 8px;
-    background: var(--gold);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.1s ease;
-    transform: translate(-50%, -50%);
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(201,168,76,0.5);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9998;
-    transition: transform 0.18s ease, width 0.3s, height 0.3s, border-color 0.3s;
-    transform: translate(-50%, -50%);
-  }
-  body:hover .cursor-ring { border-color: rgba(201,168,76,0.8); }
-
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 24px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
-  }
-
-  .nav-logo {
-    font-family: 'Dancing Script', cursive;
-    font-size: 28px;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-decoration: none;
-  }
-  .nav-logo span {
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    letter-spacing: 6px;
-    display: block;
-    color: var(--gold);
-    margin-top: -4px;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 40px;
-    list-style: none;
-  }
-  .nav-links a {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--gray-light);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-
-  .lang-switch {
-    display: flex;
-    gap: 12px;
-  }
-  .lang-switch button {
-    background: none;
-    border: none;
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--gray-light);
-    cursor: none;
-    transition: color 0.3s;
-    padding: 0;
-  }
-  .lang-switch button.active,
-  .lang-switch button:hover { color: var(--gold); }
-
-  /* HERO */
-  .hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 50%);
-  }
-
-  /* Animated clock face */
-  .clock-bg {
-    position: absolute;
-    right: -80px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 680px;
-    height: 680px;
-    opacity: 0.07;
-  }
-  .clock-bg circle { fill: none; stroke: var(--gold); }
-  .clock-hand { transform-origin: 340px 340px; }
-  .hour-hand { animation: rotate 43200s linear infinite; }
-  .minute-hand { animation: rotate 3600s linear infinite; }
-  .second-hand { stroke: var(--gold-light) !important; animation: rotate 60s linear infinite; }
-
-  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-  /* Decorative lines */
-  .deco-line {
-    position: absolute;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    height: 1px;
-    opacity: 0.3;
-  }
-  .deco-line-1 { width: 300px; top: 35%; left: -50px; transform: rotate(-15deg); }
-  .deco-line-2 { width: 200px; bottom: 30%; right: 100px; transform: rotate(8deg); }
-
-  .hero-content {
-    text-align: center;
-    z-index: 2;
-    animation: fadeUp 1.2s ease forwards;
-    opacity: 0;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .hero-eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 8px;
-    color: var(--gold);
-    margin-bottom: 30px;
-    animation: fadeUp 1.2s 0.2s ease forwards;
-    opacity: 0;
-  }
-
-  .hero-logo-display {
-    margin-bottom: 20px;
-    animation: fadeUp 1.2s 0.4s ease forwards;
-    opacity: 0;
-  }
-
-  .logo-chrono {
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(72px, 10vw, 130px);
-    line-height: 0.9;
-    color: var(--white);
-    position: relative;
-    display: inline-block;
-  }
-  .logo-chrono::before {
-    content: '';
-    position: absolute;
-    width: 110%;
-    height: 110%;
-    left: -5%;
-    top: -5%;
-    border: 1.5px solid rgba(201,168,76,0.25);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    transform: rotate(-8deg);
-  }
-
-  .logo-store {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(22px, 3vw, 38px);
-    letter-spacing: 18px;
-    color: var(--white);
-    margin-top: 8px;
-    display: block;
-  }
-
-  .hero-tagline {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: clamp(16px, 2vw, 22px);
-    color: var(--gray-light);
-    margin-top: 28px;
-    letter-spacing: 1px;
-    animation: fadeUp 1.2s 0.6s ease forwards;
-    opacity: 0;
-  }
-
-  .hero-cta {
-    margin-top: 50px;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    animation: fadeUp 1.2s 0.8s ease forwards;
-    opacity: 0;
-  }
-
-  .btn-primary {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--black);
-    background: var(--gold);
-    border: none;
-    padding: 16px 36px;
-    text-decoration: none;
-    transition: background 0.3s, transform 0.2s;
-    display: inline-block;
-  }
-  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-
-  .btn-secondary {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    background: transparent;
-    border: 1px solid rgba(201,168,76,0.4);
-    padding: 16px 36px;
-    text-decoration: none;
-    transition: border-color 0.3s, transform 0.2s;
-    display: inline-block;
-  }
-  .btn-secondary:hover { border-color: var(--gold); transform: translateY(-2px); }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    animation: fadeUp 1.2s 1.2s ease forwards;
-    opacity: 0;
-  }
-  .hero-scroll span {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: var(--gray-light);
-  }
-  .scroll-line {
-    width: 1px;
-    height: 50px;
-    background: linear-gradient(to bottom, var(--gold), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.3; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.2); }
-  }
-
-  /* SECTION COMMON */
-  section { padding: 120px 60px; }
-
-  .section-label {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 6px;
-    color: var(--gold);
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(36px, 5vw, 60px);
-    font-weight: 300;
-    line-height: 1.1;
-    color: var(--white);
-  }
-
-  .gold-rule {
-    width: 60px;
-    height: 1px;
-    background: var(--gold);
-    margin: 28px 0;
-  }
-
-  /* SERVICES */
-  .services {
-    background: var(--black);
-    border-top: 1px solid rgba(201,168,76,0.1);
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    margin-top: 70px;
-  }
-
-  .service-header {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    margin-bottom: 60px;
-    align-items: end;
-  }
-
-  .service-card {
-    padding: 50px 40px;
-    border: 1px solid rgba(201,168,76,0.1);
-    position: relative;
-    transition: border-color 0.4s, background 0.4s;
-    overflow: hidden;
-  }
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px;
-    height: 0;
-    background: var(--gold);
-    transition: height 0.4s;
-  }
-  .service-card:hover { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.02); }
-  .service-card:hover::before { height: 100%; }
-
-  .service-number {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--gold-dark);
-    margin-bottom: 24px;
-  }
-
-  .service-icon {
-    font-size: 32px;
-    margin-bottom: 20px;
-    display: block;
-  }
-
-  .service-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 400;
-    color: var(--white);
-    margin-bottom: 14px;
-  }
-
-  .service-desc {
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--gray-light);
-    font-style: italic;
-  }
-
-  /* COLLECTION */
-  .collection {
-    background: #060606;
-    border-top: 1px solid rgba(201,168,76,0.1);
-  }
-
-  .collection-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 70px;
-  }
-
-  .watches-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-  }
-
-  .watch-card {
-    background: var(--gray);
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 3/4;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    transition: transform 0.4s;
-  }
-  .watch-card:hover { transform: scale(1.01); }
-
-  .watch-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  }
-
-  .watch-face {
-    width: 140px;
-    height: 140px;
-    opacity: 0.4;
-  }
-
-  .watch-info {
-    position: relative;
-    z-index: 2;
-    padding: 30px;
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
-  }
-
-  .watch-brand {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    margin-bottom: 6px;
-  }
-
-  .watch-model {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    color: var(--white);
-    margin-bottom: 8px;
-  }
-
-  .watch-price {
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    letter-spacing: 2px;
-    color: var(--gold-light);
-  }
-
-  .watch-status {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 3px;
-    padding: 6px 12px;
-    border: 1px solid rgba(201,168,76,0.4);
-    color: var(--gold);
-  }
-
-  .coming-soon-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(2px);
-  }
-  .coming-soon-overlay span {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 5px;
-    color: var(--gold);
-    border: 1px solid rgba(201,168,76,0.4);
-    padding: 12px 24px;
-  }
-
-  /* ABOUT */
-  .about {
-    background: var(--black);
-    border-top: 1px solid rgba(201,168,76,0.1);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 120px;
-    align-items: center;
-  }
-
-  .about-visual {
-    position: relative;
-  }
-
-  .about-frame {
-    width: 100%;
-    aspect-ratio: 3/4;
-    border: 1px solid rgba(201,168,76,0.2);
-    position: relative;
-    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .about-frame::before {
-    content: '';
-    position: absolute;
-    inset: 12px;
-    border: 1px solid rgba(201,168,76,0.1);
-  }
-
-  .about-initials {
-    font-family: 'Dancing Script', cursive;
-    font-size: 120px;
-    color: rgba(201,168,76,0.12);
-    user-select: none;
-  }
-
-  .about-badge {
-    position: absolute;
-    bottom: -20px;
-    right: -20px;
-    background: var(--gold);
-    width: 120px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .about-badge .years {
-    font-family: 'Cinzel', serif;
-    font-size: 36px;
-    color: var(--black);
-    line-height: 1;
-  }
-  .about-badge .years-label {
-    font-family: 'Cinzel', serif;
-    font-size: 8px;
-    letter-spacing: 2px;
-    color: var(--black);
-    text-align: center;
-    margin-top: 4px;
-  }
-
-  .about-text p {
-    font-size: 18px;
-    line-height: 1.8;
-    color: rgba(248,245,240,0.75);
-    margin-bottom: 20px;
-  }
-
-  .about-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-top: 40px;
-    padding-top: 40px;
-    border-top: 1px solid rgba(201,168,76,0.15);
-  }
-
-  .stat-item {}
-  .stat-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    font-weight: 300;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .stat-label {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--gray-light);
-    margin-top: 6px;
-  }
-
-  /* CONTACT */
-  .contact {
-    background: #050505;
-    border-top: 1px solid rgba(201,168,76,0.1);
-  }
-
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 100px;
-    margin-top: 70px;
-  }
-
-  .contact-info-block {
-    margin-bottom: 40px;
-  }
-  .contact-info-label {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    margin-bottom: 10px;
-  }
-  .contact-info-value {
-    font-size: 18px;
-    color: var(--white);
-    font-style: italic;
-    line-height: 1.5;
-  }
-  .contact-info-value a {
-    color: var(--white);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  .contact-info-value a:hover { color: var(--gold); }
-
-  .contact-form {}
-  .form-group { margin-bottom: 24px; }
-  .form-group label {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    display: block;
-    margin-bottom: 10px;
-  }
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(201,168,76,0.25);
-    padding: 12px 0;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 17px;
-    color: var(--white);
-    outline: none;
-    transition: border-color 0.3s;
-    cursor: none;
-  }
-  .form-group input:focus,
-  .form-group textarea:focus { border-bottom-color: var(--gold); }
-  .form-group textarea { resize: none; height: 100px; }
-  .form-group select option { background: var(--black); }
-
-  .form-submit {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--black);
-    background: var(--gold);
-    border: none;
-    padding: 18px 48px;
-    cursor: none;
-    transition: background 0.3s;
-    margin-top: 12px;
-  }
-  .form-submit:hover { background: var(--gold-light); }
-
-  /* FOOTER */
-  footer {
-    padding: 40px 60px;
-    border-top: 1px solid rgba(201,168,76,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-logo {
-    font-family: 'Dancing Script', cursive;
-    font-size: 22px;
-    color: var(--white);
-  }
-  .footer-logo span {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 5px;
-    color: var(--gold);
-    display: block;
-  }
-
-  .footer-copy {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--gray-light);
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 30px;
-  }
-  .footer-links a {
-    font-family: 'Cinzel', serif;
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--gray-light);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  .footer-links a:hover { color: var(--gold); }
-
-  /* DIVIDER */
-  .gold-divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    opacity: 0.2;
-  }
-
-  /* Reveal animation */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Multilang */
-  [data-lang] { display: none; }
-  [data-lang].active { display: block; }
-  [data-lang-inline] { display: none; }
-  [data-lang-inline].active { display: inline; }
-
-  @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    section { padding: 80px 24px; }
-    .services-grid { grid-template-columns: 1fr; }
-    .service-header { grid-template-columns: 1fr; gap: 20px; }
-    .watches-grid { grid-template-columns: 1fr; }
-    .about-grid { grid-template-columns: 1fr; gap: 50px; }
-    .contact-grid { grid-template-columns: 1fr; gap: 50px; }
-    footer { flex-direction: column; gap: 20px; text-align: center; }
-  }
+  background: var(–black);
+  color: var(–white);
+  font-family: ‘Cormorant Garamond’, serif;
+  overflow-x: hidden;
+  cursor: none;
+  }
+
+/* Custom cursor */
+.cursor {
+width: 8px; height: 8px;
+background: var(–gold);
+border-radius: 50%;
+position: fixed;
+pointer-events: none;
+z-index: 9999;
+transition: transform 0.1s ease;
+transform: translate(-50%, -50%);
+}
+.cursor-ring {
+width: 36px; height: 36px;
+border: 1px solid rgba(201,168,76,0.5);
+border-radius: 50%;
+position: fixed;
+pointer-events: none;
+z-index: 9998;
+transition: transform 0.18s ease, width 0.3s, height 0.3s, border-color 0.3s;
+transform: translate(-50%, -50%);
+}
+body:hover .cursor-ring { border-color: rgba(201,168,76,0.8); }
+
+/* NAV */
+nav {
+position: fixed; top: 0; left: 0; right: 0;
+z-index: 100;
+padding: 24px 60px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+}
+.nav-logo {
+font-family: ‘Dancing Script’, cursive;
+font-size: 28px;
+color: var(–white);
+letter-spacing: 1px;
+text-decoration: none;
+}
+.nav-logo span {
+font-family: ‘Cinzel’, serif;
+font-size: 13px;
+letter-spacing: 6px;
+display: block;
+color: var(–gold);
+margin-top: -4px;
+}
+.nav-links {
+display: flex;
+gap: 40px;
+list-style: none;
+}
+.nav-links a {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 3px;
+color: var(–gray-light);
+text-decoration: none;
+transition: color 0.3s;
+}
+.nav-links a:hover { color: var(–gold); }
+.lang-switch {
+display: flex;
+gap: 12px;
+}
+.lang-switch button {
+background: none;
+border: none;
+font-family: ‘Cinzel’, serif;
+font-size: 10px;
+letter-spacing: 2px;
+color: var(–gray-light);
+cursor: none;
+transition: color 0.3s;
+padding: 0;
+}
+.lang-switch button.active,
+.lang-switch button:hover { color: var(–gold); }
+
+/* HERO */
+.hero {
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+overflow: hidden;
+}
+.hero-bg {
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.06) 0%, transparent 60%),
+radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 50%);
+}
+.clock-bg {
+position: absolute;
+right: -80px;
+top: 50%;
+transform: translateY(-50%);
+width: 680px;
+height: 680px;
+opacity: 0.07;
+}
+.clock-bg circle { fill: none; stroke: var(–gold); }
+.clock-hand { transform-origin: 340px 340px; }
+.hour-hand { animation: rotate 43200s linear infinite; }
+.minute-hand { animation: rotate 3600s linear infinite; }
+.second-hand { stroke: var(–gold-light) !important; animation: rotate 60s linear infinite; }
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.deco-line {
+position: absolute;
+background: linear-gradient(to right, transparent, var(–gold), transparent);
+height: 1px;
+opacity: 0.3;
+}
+.deco-line-1 { width: 300px; top: 35%; left: -50px; transform: rotate(-15deg); }
+.deco-line-2 { width: 200px; bottom: 30%; right: 100px; transform: rotate(8deg); }
+
+.hero-content {
+text-align: center;
+z-index: 2;
+animation: fadeUp 1.2s ease forwards;
+opacity: 0;
+}
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.hero-eyebrow {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 8px;
+color: var(–gold);
+margin-bottom: 30px;
+animation: fadeUp 1.2s 0.2s ease forwards;
+opacity: 0;
+}
+.hero-logo-display {
+margin-bottom: 20px;
+animation: fadeUp 1.2s 0.4s ease forwards;
+opacity: 0;
+}
+.logo-chrono {
+font-family: ‘Dancing Script’, cursive;
+font-size: clamp(72px, 10vw, 130px);
+line-height: 0.9;
+color: var(–white);
+position: relative;
+display: inline-block;
+}
+.logo-chrono::before {
+content: ‘’;
+position: absolute;
+width: 110%;
+height: 110%;
+left: -5%;
+top: -5%;
+border: 1.5px solid rgba(201,168,76,0.25);
+border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+transform: rotate(-8deg);
+}
+.logo-store {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(22px, 3vw, 38px);
+letter-spacing: 18px;
+color: var(–white);
+margin-top: 8px;
+display: block;
+}
+.hero-tagline {
+font-family: ‘Cormorant Garamond’, serif;
+font-style: italic;
+font-size: clamp(16px, 2vw, 22px);
+color: var(–gray-light);
+margin-top: 28px;
+letter-spacing: 1px;
+animation: fadeUp 1.2s 0.6s ease forwards;
+opacity: 0;
+}
+.hero-cta {
+margin-top: 50px;
+display: flex;
+gap: 20px;
+justify-content: center;
+animation: fadeUp 1.2s 0.8s ease forwards;
+opacity: 0;
+}
+.btn-primary {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 4px;
+color: var(–black);
+background: var(–gold);
+border: none;
+padding: 16px 36px;
+text-decoration: none;
+transition: background 0.3s, transform 0.2s;
+display: inline-block;
+}
+.btn-primary:hover { background: var(–gold-light); transform: translateY(-2px); }
+.btn-secondary {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 4px;
+color: var(–gold);
+background: transparent;
+border: 1px solid rgba(201,168,76,0.4);
+padding: 16px 36px;
+text-decoration: none;
+transition: border-color 0.3s, transform 0.2s;
+display: inline-block;
+}
+.btn-secondary:hover { border-color: var(–gold); transform: translateY(-2px); }
+.hero-scroll {
+position: absolute;
+bottom: 40px;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 8px;
+animation: fadeUp 1.2s 1.2s ease forwards;
+opacity: 0;
+}
+.hero-scroll span {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 4px;
+color: var(–gray-light);
+}
+.scroll-line {
+width: 1px;
+height: 50px;
+background: linear-gradient(to bottom, var(–gold), transparent);
+animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+0%, 100% { opacity: 0.3; transform: scaleY(1); }
+50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* SECTION COMMON */
+section { padding: 120px 60px; }
+.section-label {
+font-family: ‘Cinzel’, serif;
+font-size: 10px;
+letter-spacing: 6px;
+color: var(–gold);
+margin-bottom: 16px;
+display: block;
+}
+.section-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(36px, 5vw, 60px);
+font-weight: 300;
+line-height: 1.1;
+color: var(–white);
+}
+.gold-rule {
+width: 60px;
+height: 1px;
+background: var(–gold);
+margin: 28px 0;
+}
+
+/* SERVICES */
+.services {
+background: var(–black);
+border-top: 1px solid rgba(201,168,76,0.1);
+}
+.services-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 0;
+margin-top: 70px;
+}
+.service-header {
+grid-column: 1 / -1;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 80px;
+margin-bottom: 60px;
+align-items: end;
+}
+.service-card {
+padding: 50px 40px;
+border: 1px solid rgba(201,168,76,0.1);
+position: relative;
+transition: border-color 0.4s, background 0.4s;
+overflow: hidden;
+}
+.service-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0;
+width: 3px;
+height: 0;
+background: var(–gold);
+transition: height 0.4s;
+}
+.service-card:hover { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.02); }
+.service-card:hover::before { height: 100%; }
+.service-number {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 4px;
+color: var(–gold-dark);
+margin-bottom: 24px;
+}
+.service-icon {
+font-size: 32px;
+margin-bottom: 20px;
+display: block;
+}
+.service-name {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 26px;
+font-weight: 400;
+color: var(–white);
+margin-bottom: 14px;
+}
+.service-desc {
+font-size: 16px;
+line-height: 1.7;
+color: var(–gray-light);
+font-style: italic;
+}
+
+/* COLLECTION */
+.collection {
+background: #060606;
+border-top: 1px solid rgba(201,168,76,0.1);
+}
+.collection-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-end;
+margin-bottom: 70px;
+}
+.watches-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+}
+.watch-card {
+background: var(–gray);
+position: relative;
+overflow: hidden;
+aspect-ratio: 3/4;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+transition: transform 0.4s;
+}
+.watch-card:hover { transform: scale(1.01); }
+.watch-placeholder {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+.watch-face { width: 140px; height: 140px; opacity: 0.4; }
+.watch-info {
+position: relative;
+z-index: 2;
+padding: 30px;
+background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+}
+.watch-brand {
+font-family: ‘Cinzel’, serif;
+font-size: 10px;
+letter-spacing: 4px;
+color: var(–gold);
+margin-bottom: 6px;
+}
+.watch-model {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 22px;
+color: var(–white);
+margin-bottom: 8px;
+}
+.watch-price {
+font-family: ‘Cinzel’, serif;
+font-size: 14px;
+letter-spacing: 2px;
+color: var(–gold-light);
+}
+.watch-status {
+position: absolute;
+top: 20px;
+right: 20px;
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 3px;
+padding: 6px 12px;
+border: 1px solid rgba(201,168,76,0.4);
+color: var(–gold);
+}
+.coming-soon-overlay {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(0,0,0,0.6);
+backdrop-filter: blur(2px);
+}
+.coming-soon-overlay span {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 5px;
+color: var(–gold);
+border: 1px solid rgba(201,168,76,0.4);
+padding: 12px 24px;
+}
+
+/* ABOUT */
+.about {
+background: var(–black);
+border-top: 1px solid rgba(201,168,76,0.1);
+}
+.about-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 120px;
+align-items: center;
+}
+.about-visual { position: relative; }
+.about-frame {
+width: 100%;
+aspect-ratio: 3/4;
+border: 1px solid rgba(201,168,76,0.2);
+position: relative;
+background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.about-frame::before {
+content: ‘’;
+position: absolute;
+inset: 12px;
+border: 1px solid rgba(201,168,76,0.1);
+}
+.about-initials {
+font-family: ‘Dancing Script’, cursive;
+font-size: 120px;
+color: rgba(201,168,76,0.12);
+user-select: none;
+}
+.about-badge {
+position: absolute;
+bottom: -20px;
+right: -20px;
+background: var(–gold);
+width: 120px;
+height: 120px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+.about-badge .years {
+font-family: ‘Cinzel’, serif;
+font-size: 36px;
+color: var(–black);
+line-height: 1;
+}
+.about-badge .years-label {
+font-family: ‘Cinzel’, serif;
+font-size: 8px;
+letter-spacing: 2px;
+color: var(–black);
+text-align: center;
+margin-top: 4px;
+}
+.about-text p {
+font-size: 18px;
+line-height: 1.8;
+color: rgba(248,245,240,0.75);
+margin-bottom: 20px;
+}
+.about-stats {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 30px;
+margin-top: 40px;
+padding-top: 40px;
+border-top: 1px solid rgba(201,168,76,0.15);
+}
+.stat-number {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 48px;
+font-weight: 300;
+color: var(–gold);
+line-height: 1;
+}
+.stat-label {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 3px;
+color: var(–gray-light);
+margin-top: 6px;
+}
+
+/* CONTACT */
+.contact {
+background: #050505;
+border-top: 1px solid rgba(201,168,76,0.1);
+}
+.contact-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 100px;
+margin-top: 70px;
+}
+.contact-info-block { margin-bottom: 40px; }
+.contact-info-label {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 4px;
+color: var(–gold);
+margin-bottom: 10px;
+}
+.contact-info-value {
+font-size: 18px;
+color: var(–white);
+font-style: italic;
+line-height: 1.5;
+}
+.contact-info-value a {
+color: var(–white);
+text-decoration: none;
+transition: color 0.3s;
+}
+.contact-info-value a:hover { color: var(–gold); }
+
+/* MESSENGER ICONS */
+.messenger-phone {
+font-family: ‘Cinzel’, serif;
+font-size: 16px;
+letter-spacing: 3px;
+color: var(–white);
+font-style: normal;
+margin-bottom: 16px;
+display: block;
+}
+.messenger-icons {
+display: flex;
+gap: 20px;
+align-items: center;
+flex-wrap: wrap;
+}
+.messenger-icons a {
+color: var(–gray-light);
+font-size: 22px;
+transition: color 0.3s, transform 0.3s;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 44px;
+height: 44px;
+border: 1px solid rgba(201,168,76,0.15);
+text-decoration: none;
+position: relative;
+}
+.messenger-icons a::after {
+content: attr(title);
+position: absolute;
+bottom: -24px;
+left: 50%;
+transform: translateX(-50%);
+font-family: ‘Cinzel’, serif;
+font-size: 8px;
+letter-spacing: 1px;
+color: var(–gray-light);
+white-space: nowrap;
+opacity: 0;
+transition: opacity 0.3s;
+}
+.messenger-icons a:hover::after { opacity: 1; }
+.messenger-icons a:hover { transform: translateY(-3px); border-color: transparent; }
+.messenger-icons a.wa:hover  { color: #25D366; }
+.messenger-icons a.tg:hover  { color: #229ED9; }
+.messenger-icons a.vb:hover  { color: #7360F2; }
+.messenger-icons a.wc:hover  { color: #07C160; }
+
+/* FORM */
+.form-group { margin-bottom: 24px; }
+.form-group label {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 4px;
+color: var(–gold);
+display: block;
+margin-bottom: 10px;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+width: 100%;
+background: transparent;
+border: none;
+border-bottom: 1px solid rgba(201,168,76,0.25);
+padding: 12px 0;
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 17px;
+color: var(–white);
+outline: none;
+transition: border-color 0.3s;
+cursor: none;
+}
+.form-group input:focus,
+.form-group textarea:focus { border-bottom-color: var(–gold); }
+.form-group textarea { resize: none; height: 100px; }
+.form-group select option { background: var(–black); }
+.form-submit {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 4px;
+color: var(–black);
+background: var(–gold);
+border: none;
+padding: 18px 48px;
+cursor: none;
+transition: background 0.3s;
+margin-top: 12px;
+}
+.form-submit:hover { background: var(–gold-light); }
+
+/* FOOTER */
+footer {
+padding: 40px 60px;
+border-top: 1px solid rgba(201,168,76,0.1);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.footer-logo {
+font-family: ‘Dancing Script’, cursive;
+font-size: 22px;
+color: var(–white);
+}
+.footer-logo span {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 5px;
+color: var(–gold);
+display: block;
+}
+.footer-copy {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 2px;
+color: var(–gray-light);
+}
+.footer-links {
+display: flex;
+gap: 30px;
+}
+.footer-links a {
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+letter-spacing: 3px;
+color: var(–gray-light);
+text-decoration: none;
+transition: color 0.3s;
+}
+.footer-links a:hover { color: var(–gold); }
+
+.gold-divider {
+width: 100%;
+height: 1px;
+background: linear-gradient(to right, transparent, var(–gold), transparent);
+opacity: 0.2;
+}
+
+/* Reveal */
+.reveal {
+opacity: 0;
+transform: translateY(40px);
+transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+/* Multilang */
+[data-lang] { display: none; }
+[data-lang].active { display: block; }
+[data-lang-inline] { display: none; }
+[data-lang-inline].active { display: inline; }
+
+@media (max-width: 900px) {
+nav { padding: 20px 24px; }
+.nav-links { display: none; }
+section { padding: 80px 24px; }
+.services-grid { grid-template-columns: 1fr; }
+.service-header { grid-template-columns: 1fr; gap: 20px; }
+.watches-grid { grid-template-columns: 1fr; }
+.about-grid { grid-template-columns: 1fr; gap: 50px; }
+.contact-grid { grid-template-columns: 1fr; gap: 50px; }
+footer { flex-direction: column; gap: 20px; text-align: center; }
+}
 </style>
+
 </head>
 <body>
 
@@ -761,28 +750,29 @@
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- NAV -->
+
 <nav>
   <a href="#" class="nav-logo">
     Chrono
     <span>S T O R E</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#services" data-nav="services">
+    <li><a href="#services">
       <span data-lang-inline="it" class="active">Servizi</span>
       <span data-lang-inline="en">Services</span>
       <span data-lang-inline="ru">Услуги</span>
     </a></li>
-    <li><a href="#collection" data-nav="collection">
+    <li><a href="#collection">
       <span data-lang-inline="it" class="active">Collezione</span>
       <span data-lang-inline="en">Collection</span>
       <span data-lang-inline="ru">Коллекция</span>
     </a></li>
-    <li><a href="#about" data-nav="about">
+    <li><a href="#about">
       <span data-lang-inline="it" class="active">Il Maestro</span>
       <span data-lang-inline="en">The Master</span>
       <span data-lang-inline="ru">Мастер</span>
     </a></li>
-    <li><a href="#contact" data-nav="contact">
+    <li><a href="#contact">
       <span data-lang-inline="it" class="active">Contatti</span>
       <span data-lang-inline="en">Contact</span>
       <span data-lang-inline="ru">Контакты</span>
@@ -796,15 +786,13 @@
 </nav>
 
 <!-- HERO -->
+
 <section class="hero" id="home">
   <div class="hero-bg"></div>
-
-  <!-- Animated clock -->
   <svg class="clock-bg" viewBox="0 0 680 680">
     <circle cx="340" cy="340" r="320" stroke-width="1"/>
     <circle cx="340" cy="340" r="300" stroke-width="0.5" stroke-dasharray="4 8"/>
     <circle cx="340" cy="340" r="250" stroke-width="0.3"/>
-    <!-- Hour markers -->
     <g stroke="rgba(201,168,76,1)" stroke-width="2">
       <line x1="340" y1="30" x2="340" y2="60" transform="rotate(0 340 340)"/>
       <line x1="340" y1="30" x2="340" y2="60" transform="rotate(30 340 340)"/>
@@ -819,14 +807,12 @@
       <line x1="340" y1="30" x2="340" y2="60" transform="rotate(300 340 340)"/>
       <line x1="340" y1="30" x2="340" y2="60" transform="rotate(330 340 340)"/>
     </g>
-    <!-- Hands -->
     <line class="clock-hand hour-hand" x1="340" y1="340" x2="340" y2="160" stroke="rgba(201,168,76,1)" stroke-width="4" stroke-linecap="round"/>
     <line class="clock-hand minute-hand" x1="340" y1="340" x2="340" y2="100" stroke="rgba(201,168,76,1)" stroke-width="2.5" stroke-linecap="round"/>
     <line class="clock-hand second-hand" x1="340" y1="380" x2="340" y2="80" stroke="rgba(201,168,76,0.8)" stroke-width="1" stroke-linecap="round"/>
     <circle cx="340" cy="340" r="8" fill="rgba(201,168,76,0.8)"/>
     <circle cx="340" cy="340" r="3" fill="#0a0a0a"/>
   </svg>
-
   <div class="deco-line deco-line-1"></div>
   <div class="deco-line deco-line-2"></div>
 
@@ -836,18 +822,15 @@
       <span data-lang-inline="en">WATCHMAKING · MODENA · EST. 2025</span>
       <span data-lang-inline="ru">ЧАСОВАЯ МАСТЕРСКАЯ · МОДЕНА · С 2025</span>
     </p>
-
     <div class="hero-logo-display">
       <div class="logo-chrono">Chrono</div>
       <div class="logo-store">S T O R E</div>
     </div>
-
     <p class="hero-tagline">
       <span data-lang-inline="it" class="active">L'arte dell'orologeria. La precisione come stile di vita.</span>
       <span data-lang-inline="en">The art of watchmaking. Precision as a way of life.</span>
       <span data-lang-inline="ru">Искусство часового дела. Точность как образ жизни.</span>
     </p>
-
     <div class="hero-cta">
       <a href="#services" class="btn-primary">
         <span data-lang-inline="it" class="active">Scopri i Servizi</span>
@@ -861,7 +844,6 @@
       </a>
     </div>
   </div>
-
   <div class="hero-scroll">
     <span>SCROLL</span>
     <div class="scroll-line"></div>
@@ -869,6 +851,7 @@
 </section>
 
 <!-- SERVICES -->
+
 <section class="services" id="services">
   <div class="reveal">
     <span class="section-label">
@@ -883,7 +866,6 @@
     </h2>
     <div class="gold-rule"></div>
   </div>
-
   <div class="services-grid">
     <div class="service-card reveal">
       <div class="service-number">01</div>
@@ -899,7 +881,6 @@
         <span data-lang-inline="ru">Полная разборка, ультразвуковая чистка, смазка и сборка. Механические и автоматические механизмы любой сложности.</span>
       </p>
     </div>
-
     <div class="service-card reveal">
       <div class="service-number">02</div>
       <span class="service-icon">✦</span>
@@ -914,7 +895,6 @@
         <span data-lang-inline="ru">Полное эстетическое восстановление корпуса и браслета. Профессиональная лапидарная технология.</span>
       </p>
     </div>
-
     <div class="service-card reveal">
       <div class="service-number">03</div>
       <span class="service-icon">⚡</span>
@@ -929,7 +909,6 @@
         <span data-lang-inline="ru">Микрометрический ремонт высокой точности. Идеально для деликатных компонентов.</span>
       </p>
     </div>
-
     <div class="service-card reveal">
       <div class="service-number">04</div>
       <span class="service-icon">🕐</span>
@@ -948,6 +927,7 @@
 </section>
 
 <!-- COLLECTION -->
+
 <section class="collection" id="collection">
   <div class="collection-header reveal">
     <div>
@@ -971,9 +951,7 @@
       </p>
     </div>
   </div>
-
   <div class="watches-grid">
-    <!-- Watch cards with SVG clock face placeholders -->
     <div class="watch-card reveal">
       <div class="watch-placeholder">
         <svg class="watch-face" viewBox="0 0 140 140">
@@ -995,7 +973,6 @@
         <div class="watch-price">Su richiesta</div>
       </div>
     </div>
-
     <div class="watch-card reveal">
       <div class="watch-placeholder" style="background: linear-gradient(135deg, #1c1810 0%, #2a2215 100%);">
         <svg class="watch-face" viewBox="0 0 140 140">
@@ -1017,7 +994,6 @@
         <div class="watch-price">Su richiesta</div>
       </div>
     </div>
-
     <div class="watch-card reveal">
       <div class="watch-placeholder" style="background: linear-gradient(135deg, #101520 0%, #151a25 100%);">
         <svg class="watch-face" viewBox="0 0 140 140">
@@ -1045,6 +1021,7 @@
 </section>
 
 <!-- ABOUT -->
+
 <section class="about" id="about">
   <div class="about-grid">
     <div class="about-visual reveal">
@@ -1056,7 +1033,6 @@
         <div class="years-label">ANNI DI<br>ESPERIENZA</div>
       </div>
     </div>
-
     <div class="about-text reveal">
       <span class="section-label">
         <span data-lang-inline="it" class="active">— IL MAESTRO</span>
@@ -1065,7 +1041,6 @@
       </span>
       <h2 class="section-title">Hryhorii<br>Zinchenko</h2>
       <div class="gold-rule"></div>
-
       <p>
         <span data-lang-inline="it" class="active">Orologiaio autodidatta con oltre 17 anni di esperienza, formatosi attraverso l'osservazione diretta e la pratica continua. Ha lavorato a Kyiv, Malta e Varsavia prima di portare la sua arte a Modena.</span>
         <span data-lang-inline="en">Self-taught watchmaker with over 17 years of experience, formed through direct observation and continuous practice. Worked in Kyiv, Malta and Warsaw before bringing his craft to Modena.</span>
@@ -1076,7 +1051,6 @@
         <span data-lang-inline="en">Specializing in complex mechanical movements, laser welding and aesthetic restoration. Every watch that passes through his hands receives absolute attention to detail.</span>
         <span data-lang-inline="ru">Специализируется на сложных механических калибрах, лазерной сварке и эстетической реставрации. Каждые часы получают абсолютное внимание к деталям.</span>
       </p>
-
       <div class="about-stats">
         <div class="stat-item">
           <div class="stat-number">17+</div>
@@ -1100,6 +1074,7 @@
 </section>
 
 <!-- CONTACT -->
+
 <section class="contact" id="contact">
   <div class="reveal">
     <span class="section-label">
@@ -1117,108 +1092,132 @@
 
   <div class="contact-grid">
     <div class="reveal">
-      <div class="contact-info-block">
-        <div class="contact-info-label">
-          <span data-lang-inline="it" class="active">INDIRIZZO</span>
-          <span data-lang-inline="en">ADDRESS</span>
-          <span data-lang-inline="ru">АДРЕС</span>
-        </div>
-        <div class="contact-info-value">
-          Modena, Emilia-Romagna<br>
-          <em style="color:var(--gray-light); font-size:15px;">
-            <span data-lang-inline="it" class="active">Indirizzo esatto disponibile a breve</span>
-            <span data-lang-inline="en">Exact address coming soon</span>
-            <span data-lang-inline="ru">Точный адрес скоро</span>
-          </em>
-        </div>
-      </div>
 
-      <div class="contact-info-block">
-        <div class="contact-info-label">WHATSAPP</div>
-        <div class="contact-info-value">
-          <a href="https://wa.me/48000000000">+48 — — — — — — —</a>
-        </div>
-      </div>
-
-      <div class="contact-info-block">
-        <div class="contact-info-label">EMAIL</div>
-        <div class="contact-info-value">
-          <a href="mailto:info@chronostore.eu">info@chronostore.eu</a>
-        </div>
-      </div>
-
-      <div class="contact-info-block">
-        <div class="contact-info-label">
-          <span data-lang-inline="it" class="active">ORARI</span>
-          <span data-lang-inline="en">HOURS</span>
-          <span data-lang-inline="ru">ЧАСЫ РАБОТЫ</span>
-        </div>
-        <div class="contact-info-value" style="font-size:16px;">
-          <span data-lang-inline="it" class="active">Lun – Sab: 10:00 – 19:00<br>Dom: su appuntamento</span>
-          <span data-lang-inline="en">Mon – Sat: 10:00 – 19:00<br>Sun: by appointment</span>
-          <span data-lang-inline="ru">Пн – Сб: 10:00 – 19:00<br>Вс: по записи</span>
-        </div>
-      </div>
+```
+  <!-- ADDRESS -->
+  <div class="contact-info-block">
+    <div class="contact-info-label">
+      <span data-lang-inline="it" class="active">INDIRIZZO</span>
+      <span data-lang-inline="en">ADDRESS</span>
+      <span data-lang-inline="ru">АДРЕС</span>
     </div>
-
-    <div class="reveal">
-      <div class="form-group">
-        <label>
-          <span data-lang-inline="it" class="active">NOME</span>
-          <span data-lang-inline="en">NAME</span>
-          <span data-lang-inline="ru">ИМЯ</span>
-        </label>
-        <input type="text" placeholder="">
-      </div>
-      <div class="form-group">
-        <label>EMAIL</label>
-        <input type="email" placeholder="">
-      </div>
-      <div class="form-group">
-        <label>
-          <span data-lang-inline="it" class="active">SERVIZIO RICHIESTO</span>
-          <span data-lang-inline="en">SERVICE REQUESTED</span>
-          <span data-lang-inline="ru">УСЛУГА</span>
-        </label>
-        <select>
-          <option value="">—</option>
-          <option>
-            <span data-lang-inline="it" class="active">Revisione & Manutenzione</span>
-          </option>
-          <option>Lucidatura & Restauro</option>
-          <option>Saldatura Laser</option>
-          <option>
-            <span data-lang-inline="it" class="active">Acquisto Orologio</span>
-          </option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>
-          <span data-lang-inline="it" class="active">MESSAGGIO</span>
-          <span data-lang-inline="en">MESSAGE</span>
-          <span data-lang-inline="ru">СООБЩЕНИЕ</span>
-        </label>
-        <textarea placeholder=""></textarea>
-      </div>
-      <button class="form-submit">
-        <span data-lang-inline="it" class="active">INVIA RICHIESTA</span>
-        <span data-lang-inline="en">SEND REQUEST</span>
-        <span data-lang-inline="ru">ОТПРАВИТЬ</span>
-      </button>
+    <div class="contact-info-value">
+      Modena, Emilia-Romagna<br>
+      <em style="color:var(--gray-light); font-size:15px;">
+        <span data-lang-inline="it" class="active">Indirizzo esatto disponibile a breve</span>
+        <span data-lang-inline="en">Exact address coming soon</span>
+        <span data-lang-inline="ru">Точный адрес скоро</span>
+      </em>
     </div>
+  </div>
+
+  <!-- MESSENGERS -->
+  <div class="contact-info-block">
+    <div class="contact-info-label">
+      <span data-lang-inline="it" class="active">CONTATTI DIRETTI</span>
+      <span data-lang-inline="en">DIRECT CONTACT</span>
+      <span data-lang-inline="ru">СВЯЗАТЬСЯ</span>
+    </div>
+    <span class="messenger-phone">+48 690 300 898</span>
+    <div class="messenger-icons">
+      <a href="https://wa.me/48690300898" target="_blank" class="wa" title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://t.me/+48690300898" target="_blank" class="tg" title="Telegram">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="viber://chat?number=%2B48690300898" target="_blank" class="vb" title="Viber">
+        <i class="fab fa-viber"></i>
+      </a>
+      <a href="weixin://dl/chat?+48690300898" target="_blank" class="wc" title="WeChat">
+        <i class="fab fa-weixin"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- EMAIL -->
+  <div class="contact-info-block" style="margin-top: 32px;">
+    <div class="contact-info-label">EMAIL</div>
+    <div class="contact-info-value">
+      <a href="mailto:ChronoStore.it@gmail.com">ChronoStore.it@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- HOURS -->
+  <div class="contact-info-block">
+    <div class="contact-info-label">
+      <span data-lang-inline="it" class="active">ORARI</span>
+      <span data-lang-inline="en">HOURS</span>
+      <span data-lang-inline="ru">ЧАСЫ РАБОТЫ</span>
+    </div>
+    <div class="contact-info-value" style="font-size:16px;">
+      <span data-lang-inline="it" class="active">Lun – Sab: 10:00 – 19:00<br>Dom: su appuntamento</span>
+      <span data-lang-inline="en">Mon – Sat: 10:00 – 19:00<br>Sun: by appointment</span>
+      <span data-lang-inline="ru">Пн – Сб: 10:00 – 19:00<br>Вс: по записи</span>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="reveal">
+  <div class="form-group">
+    <label>
+      <span data-lang-inline="it" class="active">NOME</span>
+      <span data-lang-inline="en">NAME</span>
+      <span data-lang-inline="ru">ИМЯ</span>
+    </label>
+    <input type="text" placeholder="">
+  </div>
+  <div class="form-group">
+    <label>EMAIL</label>
+    <input type="email" placeholder="">
+  </div>
+  <div class="form-group">
+    <label>
+      <span data-lang-inline="it" class="active">SERVIZIO RICHIESTO</span>
+      <span data-lang-inline="en">SERVICE REQUESTED</span>
+      <span data-lang-inline="ru">УСЛУГА</span>
+    </label>
+    <select>
+      <option value="">—</option>
+      <option>Revisione &amp; Manutenzione</option>
+      <option>Lucidatura &amp; Restauro</option>
+      <option>Saldatura Laser</option>
+      <option>
+        <span data-lang-inline="it" class="active">Acquisto Orologio</span>
+        <span data-lang-inline="en">Watch Purchase</span>
+        <span data-lang-inline="ru">Покупка часов</span>
+      </option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>
+      <span data-lang-inline="it" class="active">MESSAGGIO</span>
+      <span data-lang-inline="en">MESSAGE</span>
+      <span data-lang-inline="ru">СООБЩЕНИЕ</span>
+    </label>
+    <textarea placeholder=""></textarea>
+  </div>
+  <button class="form-submit">
+    <span data-lang-inline="it" class="active">INVIA RICHIESTA</span>
+    <span data-lang-inline="en">SEND REQUEST</span>
+    <span data-lang-inline="ru">ОТПРАВИТЬ</span>
+  </button>
+</div>
+```
+
   </div>
 </section>
 
 <div class="gold-divider"></div>
 
 <!-- FOOTER -->
+
 <footer>
   <div class="footer-logo">
     Chrono<span>S T O R E</span>
   </div>
-  <div class="footer-copy">
-    © 2025 ChronoStore · Modena · Italy
-  </div>
+  <div class="footer-copy">© 2025 ChronoStore · Modena · Italy</div>
   <div class="footer-links">
     <a href="#home">Home</a>
     <a href="#services">
@@ -1270,7 +1269,6 @@
 
   // Language switch
   let currentLang = 'it';
-
   function setLang(lang) {
     currentLang = lang;
     document.querySelectorAll('[data-lang-inline]').forEach(el => {
@@ -1291,7 +1289,6 @@
       }
     });
   }, { threshold: 0.12 });
-
   reveals.forEach(r => observer.observe(r));
 
   // Smooth nav scroll
@@ -1305,5 +1302,7 @@
     });
   });
 </script>
+
 </body>
 </html>
+  
